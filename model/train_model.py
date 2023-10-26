@@ -4,8 +4,6 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 from neural_net import Net
-from azureml.core.model import Model
-from azureml.core import Workspace
 
 ws = Workspace.from_config()
 
@@ -50,7 +48,5 @@ for epoch in range(num_epochs):
 
 print('Finished Training!')
 
-model = Model.register(model_path= model.state_dict() + 'mnist_model.pth',
-                       model_name="mnist_model")
 
-#torch.save(model.state_dict(), 'mnist_model.pth')
+torch.save(model.state_dict(), 'mnist_model.pth')
