@@ -35,8 +35,6 @@ param dsvmJumpboxUsername string
 @description('Jumphost virtual machine password')
 param dsvmJumpboxPassword string
 
-@description('Enable public IP for Azure Machine Learning compute nodes')
-param amlComputePublicIp bool = true
 
 @description('VM size for the default compute cluster')
 param amlComputeDefaultVmSize string = 'Standard_DS3_v2'
@@ -138,15 +136,9 @@ module azuremlWorkspace 'modules/machinelearning.bicep' = {
 
     // networking
     subnetId: '${vnet.outputs.id}/subnets/snet-training'
-    computeSubnetId: '${vnet.outputs.id}/subnets/snet-training'
-    aksSubnetId: '${vnet.outputs.id}/subnets/snet-scoring'
     virtualNetworkId: vnet.outputs.id
     machineLearningPleName: 'ple-${name}-${uniqueSuffix}-mlw'
 
-    // compute
-    amlComputePublicIp: amlComputePublicIp
-    mlAksName: 'aks-${name}-${uniqueSuffix}'
-    vmSizeParam: amlComputeDefaultVmSize
   }
   dependsOn: [
     keyvault

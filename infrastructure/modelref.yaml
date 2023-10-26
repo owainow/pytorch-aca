@@ -1,0 +1,4 @@
+$schema: https://azuremlschemas.azureedge.net/latest/model.schema.json
+name: mnist_model
+path: model/mnist_model.pth
+description: Model created from local file.
