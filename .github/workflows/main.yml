@@ -38,6 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Create train & upload model
     steps:
+      - name: Create model
+        run: python model/train_model.py
 
       - name: Register model in AZML
         uses: azure/CLI@v1
