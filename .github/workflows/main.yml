@@ -1,0 +1,50 @@
+name: Azure Static Web Apps CI/CD
+
+on:
+  workflow_dispatch:    
+  push:
+    branches:
+      - main
+
+
+jobs:
+  create_infrastructure:
+    runs-on: ubuntu-latest
+    name: Create Azure Infrastructure using Bicep
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+          
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+      
+      - name: Provision AZML Enviroment
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az group create --name aca_azml --location eastus
+            az deployment group create \
+            --resource-group aca_azml \
+            --template-file infrastructure/main.bicep \
+            --parameters \
+            prefix=oow \
+            dsvmJumpboxUsername=azureadmin \
+            dsvmJumpboxPassword=securepassword
+            
+  create_train_model:
+    runs-on: ubuntu-latest
+    name: Create train & upload model
+    steps:
+
+      - name: Register model in AZML
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az ml model create -f infrastructure/modelref.yml
+          
+          
+
+    
